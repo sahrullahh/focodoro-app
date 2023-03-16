@@ -99,7 +99,6 @@
                 title: "Times up!",
               });
               this.sound();
-              this.breakTime(900, false);
             }
           }
         }, 1000);
@@ -118,16 +117,15 @@
           this.timeTobreak = false;
         }, 10);
       },
-      breakTime(time: number, repeat?: boolean): void {
+      breakTime(time: number): void {
         this.stop();
-        if (repeat) {
-          setTimeout(() => {
-            this.start(time);
-            this.timeTofocus = false;
-            this.pomodoro = false;
-            this.timeTobreak = true;
-          }, 10);
-        }
+
+        setTimeout(() => {
+          this.start(time);
+          this.timeTofocus = false;
+          this.pomodoro = false;
+          this.timeTobreak = true;
+        }, 10);
       },
       pomodoroTime(time: number): void {
         this.stop();
