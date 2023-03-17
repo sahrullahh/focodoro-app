@@ -1,6 +1,6 @@
 <template>
-  <div class="home p-20">
-    <div class="container max-w-2xl mx-auto box-border">
+  <div class="home lg:p-20 p-5 lg:mt-0 mt-20">
+    <div class="container lg:max-w-2xl max-w-full mx-auto box-border">
       <div class="text-center pb-10 space-y-3">
         <h2 class="text-4xl text-white font-bold">Focodoro</h2>
         <p class="text-sm font-semibold text-white">
@@ -35,7 +35,9 @@
             Break 15 Minutes
           </button>
         </div>
-        <h1 class="text-9xl box-border text-center font-semibold text-white">
+        <h1
+          class="lg:text-9xl text-5xl box-border text-center font-semibold text-white"
+        >
           {{
             !remainingTime ? formatTime(timeUsed) : formatTime(remainingTime)
           }}
@@ -110,6 +112,7 @@
   import { defineComponent } from "vue";
 
   import { useHead } from "unhead";
+  import { identifier } from "@babel/types";
   export default defineComponent({
     name: "HomeView",
     data() {
@@ -118,6 +121,7 @@
         interval: 0,
         isPaused: false,
         message: "",
+        speedInterval: 1000,
         timeUsed: 7200,
         timeTofocus: true,
         timeTobreak: false,
@@ -137,11 +141,19 @@
                 title: "Times up!",
               });
               this.sound("bell");
+              if (this.pomodoro) {
+                this.breakTime(900);
+                this.start(900);
+              } else if (this.timeTobreak) {
+                this.pomodoroTime(1500);
+                this.start(1500);
+              }
             }
           }
-        }, 1000);
+        }, this.speedInterval);
         this.sound("click");
       },
+
       sound(type: string): void {
         let bell: string = require("@/assets/media/bell.mp3");
         let click: string = require("@/assets/media/click.wav");
@@ -242,4 +254,8 @@
   });
 </script>
 
-<style></style>
+<style>
+  body {
+    @apply transition-colors duration-300;
+  }
+</style>
