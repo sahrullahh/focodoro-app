@@ -2,7 +2,7 @@
   <div class="home lg:p-20 p-5 lg:mt-0 mt-20">
     <div class="container lg:max-w-2xl max-w-full mx-auto box-border">
       <div class="text-center pb-10 space-y-3">
-        <h2 class="text-4xl text-white font-bold">Focodoro</h2>
+        <h2 class="text-4xl text-white font-bold">Focodoro.</h2>
         <p class="text-sm font-semibold text-white">
           {{
             !message
@@ -15,21 +15,21 @@
         <div class="pb-3 flex gap-5 justify-center">
           <button
             @click="focusTime(7200)"
-            :class="{ 'bg-red-600': timeTofocus }"
-            class="p-1 px-3 rounded text-white"
+            :class="{ 'bg-red-600 font-semibold': timeTofocus }"
+            class="p-1 px-3 rounded text-white transform transition-all active:translate-y-1"
           >
             Focus
           </button>
           <button
-            :class="{ 'bg-green-800': pomodoro }"
-            class="p-1 px-3 rounded text-white"
+            :class="{ 'bg-green-800 font-semibold': pomodoro }"
+            class="p-1 px-3 rounded text-white transform transition-all active:translate-y-1"
             @click="pomodoroTime(1500)"
           >
             Pomodoro
           </button>
           <button
-            :class="{ 'bg-orange-600': timeTobreak }"
-            class="p-1 px-3 rounded text-white"
+            :class="{ 'bg-orange-600 font-semibold': timeTobreak }"
+            class="p-1 px-3 rounded text-white transform transition-all active:translate-y-1"
             @click="breakTime(900)"
           >
             Break 15 Minutes
@@ -53,7 +53,7 @@
                 ? 'text-green-600 shadow-green-700'
                 : 'text-orange-600 shadow-orange-700'
             "
-            class="btn uppercase bg-white text-lg px-12 py-2 shadow rounded-sm font-bold"
+            class="btn uppercase transform transition-all active:translate-y-1 bg-white text-lg px-12 py-2 shadow rounded-sm font-bold"
           >
             Start
           </button>
@@ -67,7 +67,7 @@
                 ? 'text-green-600 shadow-green-700'
                 : 'text-orange-600 shadow-orange-700'
             "
-            class="btn uppercase bg-white text-lg px-12 py-2 shadow rounded-sm font-bold"
+            class="btn uppercase transform transition-all active:translate-y-1 bg-white text-lg px-12 py-2 shadow rounded-sm font-bold"
           >
             Pause
           </button>
@@ -81,7 +81,7 @@
                 ? 'text-green-600 shadow-green-700'
                 : 'text-orange-600 shadow-orange-700'
             "
-            class="btn uppercase bg-white text-lg px-12 py-2 shadow rounded-sm font-bold"
+            class="btn uppercase transform transition-all active:translate-y-1 bg-white text-lg px-12 py-2 shadow rounded-sm font-bold"
           >
             Resume
           </button>
@@ -95,7 +95,7 @@
                 ? 'text-green-600 shadow-green-700'
                 : 'text-orange-600 shadow-orange-700'
             "
-            class="btn uppercase bg-white text-lg px-12 py-2 shadow rounded-sm font-bold"
+            class="btn uppercase transform transition-all active:translate-y-1 bg-white text-lg px-12 py-2 shadow rounded-sm font-bold"
           >
             Stop
           </button>
@@ -229,10 +229,12 @@
         let hours: number = Math.floor(time / 3600);
         let minutes: number = Math.floor((time % 3600) / 60);
         let seconds: number = time % 60;
-        let h = hours < 10 ? "0" + hours : hours;
+        let h: any = hours < 10 ? "0" + hours : hours;
         let m = minutes < 10 ? "0" + minutes : minutes;
         let s = seconds < 10 ? "0" + seconds : seconds;
-        let times: any = h + ":" + m + ":" + s;
+        let countWithHours: any = h + ":" + m + ":" + s;
+        let countWithMin: any = m + ":" + s;
+        let times: any = hours > 0 ? countWithHours : countWithMin;
         useHead({
           title: `${times} - ${
             this.timeTofocus
@@ -242,7 +244,7 @@
               : "Break Time . Focodoro"
           }`,
         });
-        return h + ":" + m + ":" + s;
+        return times;
       },
     },
     mounted() {
