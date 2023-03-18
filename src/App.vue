@@ -3,8 +3,6 @@
     id="app-body"
     class="font-quicksand"
   >
-    <keep-alive>
-      <router-view />
-    </keep-alive>
+    <router-view />
   </div>
 </template>

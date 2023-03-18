@@ -87,7 +87,7 @@
           </button>
           <button
             v-if="remainingTime"
-            @click="stop"
+            @click="stop(true)"
             :class="
               timeTofocus
                 ? 'text-red-600 shadow-red-700'
@@ -126,11 +126,15 @@
         timeTofocus: true,
         timeTobreak: false,
         pomodoro: false,
+        timeRunning: true,
+        running: false,
       };
     },
     methods: {
       start(time: number): void {
         // 2 jam = 7200
+        this.sound("click");
+        this.running = true;
         this.remainingTime = time;
         this.interval = setInterval(() => {
           if (!this.isPaused) {
@@ -141,6 +145,7 @@
                 title: "Times up!",
               });
               this.sound("bell");
+              this.running = false;
               if (this.pomodoro) {
                 this.breakTime(900);
                 this.start(900);
@@ -151,9 +156,15 @@
             }
           }
         }, this.speedInterval);
-        this.sound("click");
       },
-
+      isRunning(running: boolean) {
+        if (running) {
+          const run: any = confirm(
+            "the timer still running are you sure, switch timer?"
+          );
+          return run;
+        }
+      },
       sound(type: string): void {
         let bell: string = require("@/assets/media/bell.mp3");
         let click: string = require("@/assets/media/click.wav");
@@ -164,46 +175,65 @@
         audio.play();
       },
       focusTime(time: number): void {
-        document.body.classList.add("bg-red-500");
-        document.body.classList.remove("bg-orange-600");
-        document.body.classList.remove("bg-green-600");
-        this.timeUsed = time;
-        this.stop();
-        this.timeTofocus = true;
-        this.pomodoro = false;
-        this.timeTobreak = false;
-        this.message =
-          " it's time to maintain your mood and focus in activities or your work, good luck";
+        const stillRunning: boolean = this.running
+          ? this.isRunning(this.running)
+          : true;
+        if (stillRunning) {
+          document.body.classList.add("bg-red-500");
+          document.body.classList.remove("bg-orange-600");
+          document.body.classList.remove("bg-green-600");
+          this.timeUsed = time;
+          this.stop(false);
+          this.timeTofocus = true;
+          this.pomodoro = false;
+          this.timeTobreak = false;
+          this.message =
+            " it's time to maintain your mood and focus in activities or your work, good luck";
+        }
       },
       breakTime(time: number): void {
-        document.body.classList.add("bg-orange-600");
-        document.body.classList.remove("bg-red-500");
-        document.body.classList.remove("bg-green-600");
-        this.timeUsed = time;
-        this.stop();
-        this.timeTofocus = false;
-        this.pomodoro = false;
-        this.timeTobreak = true;
-        this.message = "it's time to rest in 15 minutes to restore your energy";
+        const stillRunning: boolean = this.running
+          ? this.isRunning(this.running)
+          : true;
+        if (stillRunning) {
+          document.body.classList.add("bg-orange-600");
+          document.body.classList.remove("bg-red-500");
+          document.body.classList.remove("bg-green-600");
+          this.timeUsed = time;
+          this.stop(false);
+          this.timeTofocus = false;
+          this.pomodoro = false;
+          this.timeTobreak = true;
+          this.message =
+            "it's time to rest in 15 minutes to restore your energy";
+        }
       },
       pomodoroTime(time: number): void {
-        this.timeUsed = time;
-        document.body.classList.add("bg-green-600");
-        document.body.classList.remove("bg-orange-600");
-        document.body.classList.remove("bg-red-500");
-        this.stop();
-        this.timeTofocus = false;
-        this.pomodoro = true;
-        this.timeTobreak = false;
-        this.message =
-          "it's time to be consistent and stay focused on your activities or your work, good luck";
+        const stillRunning: boolean = this.running
+          ? this.isRunning(this.running)
+          : true;
+        if (stillRunning) {
+          this.timeUsed = time;
+          document.body.classList.add("bg-green-600");
+          document.body.classList.remove("bg-orange-600");
+          document.body.classList.remove("bg-red-500");
+          this.stop(false);
+          this.timeTofocus = false;
+          this.pomodoro = true;
+          this.timeTobreak = false;
+          this.message =
+            "it's time to be consistent and stay focused on your activities or your work, good luck";
+        }
       },
-      stop(): void {
+      stop(sound: boolean): void {
         clearInterval(this.interval);
         this.interval = 0;
         this.isPaused = false;
         this.remainingTime = 0;
-        this.sound("clickclose");
+        this.running = false;
+        if (sound) {
+          this.sound("clickclose");
+        }
       },
       pause(): void {
         clearInterval(this.interval);
